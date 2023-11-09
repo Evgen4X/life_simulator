@@ -1,0 +1,120 @@
+body {
+	padding: 0;
+	margin: 0;
+}
+
+noscript div {
+	display: block;
+	width: 100vw;
+	height: 100vh;
+	font-size: 100rem;
+}
+
+header {
+	position: sticky;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 10vh;
+	background-color: black;
+	color: white;
+	font-size: larger;
+	display: flex;
+	justify-content: center;
+	align-self: center;
+	flex-direction: row;
+}
+
+main {
+	width: 100vw;
+	height: 60vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	overflow-x: auto;
+}
+
+footer {
+	position: sticky;
+	bottom: 0;
+	left: 0;
+	width: 100vw;
+	height: 30vh;
+	background-color: black;
+	color: white;
+	font-size: larger;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+}
+
+.alert {
+	position: absolute;
+	width: 100vw;
+	height: 20vh;
+	top: -30vh;
+	box-shadow: 0 0 2em black;
+	background-color: grey;
+	font-size: 5rem;
+	font-weight: 900;
+	transition: top 1.5s ease-out;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.action {
+	height: 20vh;
+	min-width: 19vw;
+	border-top: 1px solid black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.action p {
+	font-size: larger;
+	font-weight: bolder;
+}
+
+.action button {
+	min-width: 10vw;
+	border-radius: 20% / 50%;
+}
+
+.stat {
+	display: flex;
+	height: 9vh;
+	min-width: 10vw;
+	margin: 0 auto;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.stat p {
+	font-size: large;
+	font-weight: bolder;
+	margin-bottom: 0;
+}
+
+.stat span {
+	color: rgb(0, 249, 0);
+	font-weight: bolder;
+}
+
+.upgrade {
+	width: 20vw;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	margin: 0 auto;
+}
+
+.upgrade button {
+	border-radius: 25% / 50%;
+}
