@@ -8,6 +8,14 @@ const player = {
 	time: 0,
 };
 
+const previous_stats = {
+	hp: 100,
+	saturation: 100,
+	xp: 0,
+	food: 0,
+	fatigue: 1,
+};
+
 const actions = {
 	work: {
 		saturation: -10,
@@ -62,8 +70,11 @@ const upgrades = {
 	regeneration: {
 		procedure: "autos_hp_NULL_add_0.05",
 	},
-	photosythesis: {
+	photosynthesis: {
 		procedure: "autos_saturation_NULL_add_0.05",
+	},
+	sport: {
+		procedure: "autos_fatigue_NULL_add_-0.1",
 	},
 };
 
@@ -92,9 +103,13 @@ const costs = {
 		xp: 10,
 		money: 500,
 	},
-	photosythesis: {
+	photosynthesis: {
 		xp: 10,
 		money: 500,
+	},
+	sport: {
+		xp: 5,
+		money: 200,
 	},
 };
 
@@ -124,19 +139,20 @@ function capitalize(text) {
 function alert_(message, duration) {
 	alert_div.innerHTML = message;
 	alert_div.style.top = "40vh";
-	setTimeout(() => {
+	if(duration != Infinity){setTimeout(() => {
 		alert_div.style.top = "-30vh";
-	}, duration);
+	}, duration);}
 }
 
-function pulse(element, start="#ff0000", end="#000000"){
+function pulse(element, start="#ff0000", end="#000000", time=3000){
 	element.animate({backgroundColor: start}, {duration: 0, fill: "forwards"});
-	element.animate({backgroundColor: end}, {duration: 3000, fill: "forwards"});
+	element.animate({backgroundColor: end}, {duration: time, fill: "forwards"});
 }
 
 function update(update_actions = false, update_upgrades = false) {
 	for (key in autos) {
-		player[key] += autos[key];
+		if(autos[key] >= 0 || player[key] > -autos[key])
+			player[key] += autos[key];
 	}
 	if (player.saturation > 0 && Math.random() < 0.02) {
 		player.saturation -= 1;
@@ -144,21 +160,22 @@ function update(update_actions = false, update_upgrades = false) {
 
 	if (Math.random() < player.fatigue / 10000) {
 		player.hp -= 1;
-		pulse(stat_hp)
 	}
 	if (player.saturation == 0 && Math.random() < 0.08) {
 		player.hp -= 1;
-		pulse(stat_hp);
 	}
 
 	if (player.saturation < 0) {
 		player.hp += player.saturation;
 		player.saturation = 0;
-		pulse(stat_hp);
 	}
 
 	if (player.hp <= 0) {
-		alert_("You died!", 100000);
+		alert_("You died!", Infinity);
+		window.clearInterval(game);
+	}
+	if(player.money > 1_000_000){
+		alert_("You won in " + player.time / 86400 + " days!", Infinity);
 		window.clearInterval(game);
 	}
 
@@ -173,7 +190,7 @@ function update(update_actions = false, update_upgrades = false) {
 	if (update_actions) {
 		document.querySelectorAll(".action").forEach((el) => {
 			let name = el.getAttribute("action");
-			let text = `<p>${capitalize(name)}</p><table>`;
+			let text = `<p>${capitalize(name)}</p><img src="${name}.png" /><table>`;
 			for (key in actions[name]) {
 				if (!key.startsWith("procedure")) {
 					text += `<tr><td>${capitalize(key)}</td><td>${actions[name][key]}</td></tr>`;
@@ -187,7 +204,7 @@ function update(update_actions = false, update_upgrades = false) {
 	if (update_upgrades) {
 		document.querySelectorAll(".upgrade").forEach((el) => {
 			let name = el.getAttribute("upgrade");
-			let text = `<p>${capitalize(name)}</p><table>`;
+			let text = `<p>${capitalize(name)}</p><img src="${name}.png" /><table>`;
 			for (key in upgrades[name]) {
 				if (!key.startsWith("procedure")) {
 					text += `<tr><td>${capitalize(key)}</td><td>${upgrades[name][key]}</td></tr>`;
@@ -196,6 +213,17 @@ function update(update_actions = false, update_upgrades = false) {
 			text += `</table><span>Requires ${costs[name].xp}XP and $${costs[name].money}</span><button onclick="upgrade('${name}');">Upgrade</button>`;
 			el.innerHTML = text;
 		});
+	}
+
+	for(stat in previous_stats){
+		if(Math.floor(previous_stats[stat]) != Math.floor(player[stat])){
+			if(previous_stats[stat] > player[stat]){
+				pulse(document.querySelector("." + stat), "#ff0000", "#000000", 500);
+			} else {
+				pulse(document.querySelector("." + stat), "#00ff00", "#000000", 500);
+			}
+			previous_stats[stat] = player[stat]
+		}
 	}
 }
 
@@ -260,7 +288,6 @@ function call_procedure(name) {
 	*/
 	console.log(name);
 	let [object, key, parameter, action, value, addition] = name.split("_");
-	console.log(object, key, parameter, action, value);
 	if (object == "actions") {
 		if (action == "multiply") {
 			actions[key][parameter] *= parseFloat(value);
