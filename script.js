@@ -52,13 +52,15 @@ const upgrades = {
 		procedure: "autos_money_NULL_add_0.5",
 	},
 	food: {
-		procedure: "actions_food_money_multiply_0.25_round",
+		procedure1: "actions_food_money_multiply_0.25_round",
+		procedure2: "costs_food_money_multiply_1.1_round",
+		procedure3: "costs_food_xp_add_2",
 	},
 	learn: {
 		xp: 1,
 	},
 	regeneration: {
-		procedure: "autos_hp_NULL_add_0.1",
+		procedure: "autos_hp_NULL_add_0.05",
 	},
 };
 
