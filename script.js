@@ -62,6 +62,9 @@ const upgrades = {
 	regeneration: {
 		procedure: "autos_hp_NULL_add_0.05",
 	},
+	photosythesis: {
+		procedure: "autos_saturation_NULL_add_0.05",
+	},
 };
 
 const costs = {
@@ -89,10 +92,14 @@ const costs = {
 		xp: 10,
 		money: 500,
 	},
+	photosythesis: {
+		xp: 10,
+		money: 500,
+	},
 };
 
 const autos = {
-	money: 0.1,
+	money: 0.05,
 	food: 0,
 	saturation: 0,
 	hp: 0,
@@ -122,6 +129,11 @@ function alert_(message, duration) {
 	}, duration);
 }
 
+function pulse(element, start="#ff0000", end="#000000"){
+	element.animate({backgroundColor: start}, {duration: 0, fill: "forwards"});
+	element.animate({backgroundColor: end}, {duration: 3000, fill: "forwards"});
+}
+
 function update(update_actions = false, update_upgrades = false) {
 	for (key in autos) {
 		player[key] += autos[key];
@@ -132,20 +144,17 @@ function update(update_actions = false, update_upgrades = false) {
 
 	if (Math.random() < player.fatigue / 10000) {
 		player.hp -= 1;
-		stat_hp.animate({backgroundColor: "#ff0000"}, {duration: 0, fill: "forwards"});
-		stat_hp.animate({backgroundColor: "#000000"}, {duration: 3000, fill: "forwards"});
+		pulse(stat_hp)
 	}
 	if (player.saturation == 0 && Math.random() < 0.08) {
 		player.hp -= 1;
-		stat_hp.animate({backgroundColor: "#ff0000"}, {duration: 0, fill: "forwards"});
-		stat_hp.animate({backgroundColor: "#000000"}, {duration: 3000, fill: "forwards"});
+		pulse(stat_hp);
 	}
 
 	if (player.saturation < 0) {
 		player.hp += player.saturation;
 		player.saturation = 0;
-		stat_hp.animate({backgroundColor: "#ff0000"}, {duration: 0, fill: "forwards"});
-		stat_hp.animate({backgroundColor: "#000000"}, {duration: 3000, fill: "forwards"});
+		pulse(stat_hp);
 	}
 
 	if (player.hp <= 0) {
@@ -203,8 +212,7 @@ function action(name) {
 				if (player[statistic] >= -value) {
 					player[statistic] += value;
 				} else {
-					document.querySelector("." + statistic).animate({backgroundColor: "#ff0000"}, {duration: 0, fill: "forwards"});
-					document.querySelector("." + statistic).animate({backgroundColor: "#000000"}, {duration: 3000, fill: "forwards"});
+					pulse(document.querySelector("." + statistic));
 					break;
 				}
 			} else {
@@ -222,8 +230,7 @@ function action(name) {
 function upgrade(name) {
 	for (require in costs[name]) {
 		if (player[require] < costs[name][require]) {
-			document.querySelector("." + require).animate({backgroundColor: "#ff0000"}, {duration: 0, fill: "forwards"});
-			document.querySelector("." + require).animate({backgroundColor: "#000000"}, {duration: 3000, fill: "forwards"});
+			pulse(document.querySelector("." + require));
 			return;
 		}
 	}
@@ -237,6 +244,7 @@ function upgrade(name) {
 			call_procedure(upgrades[name][statistic]);
 		} else {
 			actions[name][statistic] += upgrades[name][statistic];
+			pulse(document.querySelector(".action[action=" + name + "]"), "#00ff00", "#ffffff");
 		}
 	}
 	update(true, true);
@@ -262,6 +270,7 @@ function call_procedure(name) {
 		if (addition == "round") {
 			actions[key][parameter] = Math.round(actions[key][parameter]);
 		}
+		pulse(".action[action="+key+"]", "#00ff00", "#ffffff");
 	} else if (object == "upgrades") {
 		if (action == "multiply") {
 			upgrades[key][parameter] *= parseFloat(value);
