@@ -27,12 +27,12 @@ header {
 
 main {
 	width: 100vw;
-	height: 60vh;
+	height: 50vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-direction: row;
-	overflow-x: auto;
+	overflow-x: hidden;
 }
 
 footer {
@@ -40,14 +40,20 @@ footer {
 	bottom: 0;
 	left: 0;
 	width: 100vw;
-	height: 30vh;
-	background-color: black;
-	color: white;
+	height: 35vh;
+	background-color: white;
+	border-top: 1rem solid black;
 	font-size: larger;
 	display: flex;
-	justify-content: center;
+	justify-content: space-evenly;
 	align-items: center;
 	flex-direction: row;
+	overflow-x: auto;
+}
+
+img {
+	width: 5vw;
+	height: 5vw;
 }
 
 .alert {
@@ -68,7 +74,6 @@ footer {
 .action {
 	height: 20vh;
 	min-width: 19vw;
-	border-top: 1px solid black;
 	display: flex;
 	justify-content: center;
 	align-items: center;
